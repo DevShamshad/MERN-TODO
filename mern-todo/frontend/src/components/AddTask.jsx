@@ -9,12 +9,24 @@ const AddTask = ({ onTaskAdded }) => {
     if (!title.trim()) return alert("Please enter a task title");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/tasks", { title });
+      const token = localStorage.getItem("token"); // ✅ get token from localStorage
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ send token to backend
+        },
+      };
+
+      const res = await axios.post(
+        "http://localhost:5000/api/tasks",
+        { title },
+        config
+      );
+
       onTaskAdded(res.data);
       setTitle("");
     } catch (error) {
-      console.error(error);
-      alert("❌ Failed to add task");
+      console.error("❌ Error adding task:", error);
+      alert("Failed to add task");
     }
   };
 

@@ -6,22 +6,44 @@ const Home = () => {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
 
+  // Get token from localStorage
+  const token = localStorage.getItem("token");
+
+  // Axios instance with Authorization header
+  const axiosInstance = axios.create({
+    baseURL: "http://localhost:5000/api",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
   useEffect(() => {
-    axios.get("http://localhost:5000/api/tasks")
-      .then(res => setTasks(res.data))
-      .catch(err => console.error(err));
+    axiosInstance
+      .get("/tasks")
+      .then((res) => setTasks(res.data))
+      .catch((err) => console.error(err));
   }, []);
 
   const handleAdd = async () => {
     if (!title.trim()) return;
-    const res = await axios.post("http://localhost:5000/api/tasks", { title });
-    setTasks([...tasks, res.data]);
-    setTitle("");
+    try {
+      const res = await axiosInstance.post("/tasks", { title });
+      setTasks([...tasks, res.data]);
+      setTitle("");
+    } catch (error) {
+      console.error(error);
+      alert("❌ Failed to add task (maybe token expired)");
+    }
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:5000/api/tasks/${id}`);
-    setTasks(tasks.filter(t => t.id !== id));
+    try {
+      await axiosInstance.delete(`/tasks/${id}`);
+      setTasks(tasks.filter((t) => t._id !== id)); // _id instead of id
+    } catch (error) {
+      console.error(error);
+      alert("❌ Failed to delete task");
+    }
   };
 
   return (
@@ -39,9 +61,9 @@ const Home = () => {
 
       <ul className="task-list">
         {tasks.map((task) => (
-          <li key={task.id}>
+          <li key={task._id}>
             <span>{task.title}</span>
-            <button onClick={() => handleDelete(task.id)}>❌</button>
+            <button onClick={() => handleDelete(task._id)}>❌</button>
           </li>
         ))}
       </ul>

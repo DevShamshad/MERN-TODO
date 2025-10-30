@@ -1,24 +1,26 @@
+// src/components/Navbar.jsx
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar = () => {
-  const location = useLocation();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <nav className="navbar">
-      <h2 className="logo">Task Manager</h2>
-      <ul>
-        <li className={location.pathname === "/" ? "active" : ""}>
-          <Link to="/">Home</Link>
-        </li>
-        <li className={location.pathname === "/login" ? "active" : ""}>
-          <Link to="/login">Login</Link>
-        </li>
-        <li className={location.pathname === "/register" ? "active" : ""}>
-          <Link to="/register">Register</Link>
-        </li>
-      </ul>
+      <h2>Task Manager</h2>
+      <div>
+        <Link to="/">Home</Link>
+        {!token && <Link to="/login">Login</Link>}
+        {!token && <Link to="/register">Register</Link>}
+        {token && <button onClick={handleLogout}>Logout</button>}
+      </div>
     </nav>
   );
 };

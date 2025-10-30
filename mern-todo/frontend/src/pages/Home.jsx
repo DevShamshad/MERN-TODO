@@ -1,3 +1,4 @@
+// src/pages/Home.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Home.css";
@@ -5,45 +6,33 @@ import "./Home.css";
 const Home = () => {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
-
-  // Get token from localStorage
   const token = localStorage.getItem("token");
 
-  // Axios instance with Authorization header
-  const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000/api",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const axiosConfig = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
 
   useEffect(() => {
-    axiosInstance
-      .get("/tasks")
+    axios
+      .get("http://localhost:5000/api/tasks", axiosConfig)
       .then((res) => setTasks(res.data))
       .catch((err) => console.error(err));
   }, []);
 
   const handleAdd = async () => {
     if (!title.trim()) return;
-    try {
-      const res = await axiosInstance.post("/tasks", { title });
-      setTasks([...tasks, res.data]);
-      setTitle("");
-    } catch (error) {
-      console.error(error);
-      alert("❌ Failed to add task (maybe token expired)");
-    }
+    const res = await axios.post(
+      "http://localhost:5000/api/tasks",
+      { title },
+      axiosConfig
+    );
+    setTasks([...tasks, res.data]);
+    setTitle("");
   };
 
   const handleDelete = async (id) => {
-    try {
-      await axiosInstance.delete(`/tasks/${id}`);
-      setTasks(tasks.filter((t) => t._id !== id)); // _id instead of id
-    } catch (error) {
-      console.error(error);
-      alert("❌ Failed to delete task");
-    }
+    await axios.delete(`http://localhost:5000/api/tasks/${id}`, axiosConfig);
+    setTasks(tasks.filter((t) => t.id !== id));
   };
 
   return (
@@ -61,9 +50,9 @@ const Home = () => {
 
       <ul className="task-list">
         {tasks.map((task) => (
-          <li key={task._id}>
+          <li key={task.id}>
             <span>{task.title}</span>
-            <button onClick={() => handleDelete(task._id)}>❌</button>
+            <button onClick={() => handleDelete(task.id)}>❌</button>
           </li>
         ))}
       </ul>

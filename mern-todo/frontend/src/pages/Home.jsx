@@ -21,18 +21,27 @@ const Home = () => {
 
   const handleAdd = async () => {
     if (!title.trim()) return;
-    const res = await axios.post(
-      "http://localhost:5000/api/tasks",
-      { title },
-      axiosConfig
-    );
-    setTasks([...tasks, res.data]);
-    setTitle("");
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/tasks",
+        { title },
+        axiosConfig
+      );
+      setTasks([...tasks, res.data]);
+      setTitle("");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:5000/api/tasks/${id}`, axiosConfig);
-    setTasks(tasks.filter((t) => t.id !== id));
+    try {
+      console.log("Deleting:", id);
+      await axios.delete(`http://localhost:5000/api/tasks/${id}`, axiosConfig);
+      setTasks(tasks.filter((t) => t._id !== id)); // ✅ FIXED
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -50,9 +59,10 @@ const Home = () => {
 
       <ul className="task-list">
         {tasks.map((task) => (
-          <li key={task.id}>
+          <li key={task._id}>
+            {/* ✅ FIXED */}
             <span>{task.title}</span>
-            <button onClick={() => handleDelete(task.id)}>❌</button>
+            <button onClick={() => handleDelete(task._id)}>❌</button>
           </li>
         ))}
       </ul>

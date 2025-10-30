@@ -1,33 +1,59 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 70vh;
-}
-
-.login-box {
-  width: 100%;
-  max-width: 350px;
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+.auth-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  background-color: #f5f8ff;
 }
 
-.login-box input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+.auth-container h2 {
+  font-size: 2rem;
+  color: #111;
+  margin-bottom: 25px;
 }
 
-.login-box button {
-  background: #0d6efd;
-  color: white;
+.auth-container input {
+  width: 320px;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.auth-container input:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 4px rgba(26, 115, 232, 0.4);
+}
+
+.auth-container button {
+  width: 320px;
+  padding: 12px;
+  margin-top: 15px;
   border: none;
-  padding: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
+  background-color: #1a73e8;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.auth-container button:hover {
+  background-color: #155fc2;
+}
+
+@media (max-width: 480px) {
+  .auth-container input,
+  .auth-container button {
+    width: 85%;
+  }
+
+  .auth-container h2 {
+    font-size: 1.6rem;
+  }
 }
